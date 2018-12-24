@@ -87,14 +87,15 @@ namespace ParkingLot.BusinessLogic
             parkedVehicles.TryAdd(vehicle.VehicleNumber, parkingSpot);
             if (parkingSpot.StartPosition > vacantSpot.StartPosition)
             {
-                var newSpot = vacantSpot;
+                var newSpot = new ParkingSpot() { Floor = vacantSpot.Floor, ParkingSpotTypes = vacantSpot.ParkingSpotTypes, Row = vacantSpot.Row, StartPosition = vacantSpot.StartPosition}; 
                 newSpot.SpotCount = parkingSpot.StartPosition - vacantSpot.StartPosition;
                 freeParkingSpots = freeParkingSpots.Add(newSpot);
             }
             if (vacantSpot.SpotCount > parkingSpot.SpotCount)
             {
-                var newSpot = vacantSpot;
+                var newSpot = new ParkingSpot() { Floor = vacantSpot.Floor, ParkingSpotTypes = vacantSpot.ParkingSpotTypes, Row = vacantSpot.Row};
                 newSpot.StartPosition = parkingSpot.StartPosition + parkingSpot.SpotCount;
+                newSpot.SpotCount = vacantSpot.SpotCount - newSpot.StartPosition + 1;
                 freeParkingSpots = freeParkingSpots.Add(newSpot);
             }
             Interlocked.Add(ref _freeSpots, parkingSpot.SpotCount * -1);
@@ -103,21 +104,21 @@ namespace ParkingLot.BusinessLogic
 
         public bool UnParkVechicle(Vechicle vechicle)
         {
-            parkedVehicles.TryGetValue(vechicle.VehicleNumber, out ParkingSpot currentSpot);
+            parkedVehicles.TryRemove(vechicle.VehicleNumber, out ParkingSpot currentSpot);
             if (currentSpot == null)
                 throw new ArgumentException($"Vechicle {vechicle.VehicleNumber} is not parked");
-
-            freeParkingSpots = freeParkingSpots.Remove(currentSpot);
+            
             var leftSpot = freeParkingSpots.FirstOrDefault(spot => spot.Floor == currentSpot.Floor
              && spot.Row == currentSpot.Row
              && spot.ParkingSpotTypes == currentSpot.ParkingSpotTypes
              && spot.StartPosition + spot.SpotCount == currentSpot.StartPosition
             );
-
+            ParkingSpot newSpotToUpdate = new ParkingSpot() { Floor = currentSpot.Floor, ParkingSpotTypes = currentSpot.ParkingSpotTypes, Row = currentSpot.Row, StartPosition = currentSpot.StartPosition, SpotCount  = currentSpot.SpotCount };
             if (leftSpot != null)
             {
-                currentSpot.StartPosition = leftSpot.StartPosition;
-                currentSpot.SpotCount = currentSpot.SpotCount + leftSpot.SpotCount;
+                newSpotToUpdate.StartPosition = leftSpot.StartPosition;
+                newSpotToUpdate.SpotCount = currentSpot.SpotCount + leftSpot.SpotCount;
+                freeParkingSpots = freeParkingSpots.Remove(leftSpot);
             }
             var rightSpot = freeParkingSpots.FirstOrDefault(spot => spot.Floor == currentSpot.Floor
              && spot.Row == currentSpot.Row
@@ -127,11 +128,26 @@ namespace ParkingLot.BusinessLogic
 
             if (rightSpot != null)
             {
-                currentSpot.SpotCount = currentSpot.SpotCount + rightSpot.SpotCount;
+                newSpotToUpdate.SpotCount = newSpotToUpdate.SpotCount + rightSpot.SpotCount;
+                freeParkingSpots = freeParkingSpots.Remove(rightSpot);
             }
-            freeParkingSpots = freeParkingSpots.Add(currentSpot);
+            freeParkingSpots = freeParkingSpots.Add(newSpotToUpdate);
             return true;
         }
 
+        public ParkingSpotStatus GetParkingSpotStatus(ParkingSpot parkingSpot)
+        {
+            var rightSpot = freeParkingSpots.FirstOrDefault(spot => spot.Floor == parkingSpot.Floor
+             && spot.Row == parkingSpot.Row
+             && spot.ParkingSpotTypes == parkingSpot.ParkingSpotTypes
+             && spot.StartPosition <= parkingSpot.StartPosition
+             && spot.StartPosition + spot.SpotCount >= parkingSpot.SpotCount + parkingSpot.StartPosition
+            );
+            if (rightSpot != null)
+            {
+                return ParkingSpotStatus.Vacant;
+            }
+            return ParkingSpotStatus.Occupied;
+        }
     }
 }

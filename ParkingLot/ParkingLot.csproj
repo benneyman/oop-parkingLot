@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="BusinessLogic\ParkingLot.cs" />
     <Compile Include="BusinessLogic\ParkingSpaceMapper.cs" />
+    <Compile Include="Enums\ParkingSpotStatus.cs" />
     <Compile Include="Enums\ParkingSpotTypes.cs" />
     <Compile Include="Enums\VehicleTypes.cs" />
     <Compile Include="Interfaces\IParkingLot.cs" />

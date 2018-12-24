@@ -1,4 +1,5 @@
-﻿using ParkingLot.Models;
+﻿using ParkingLot.Enums;
+using ParkingLot.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace ParkingLot.Interfaces
         bool ParkVehicle(Vechicle vehicle, ParkingSpot parkingSpot);
         bool UnParkVechicle(Vechicle vechicle);
         ParkingSpot GetOptimalParkingSpot(Vechicle vechicle);
+        ParkingSpotStatus GetParkingSpotStatus(ParkingSpot spot);
     }
 }
