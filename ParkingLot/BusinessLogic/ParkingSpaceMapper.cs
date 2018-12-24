@@ -23,7 +23,7 @@ namespace ParkingLot.BusinessLogic
                     return new ParkingSpaceRequirment() { ParkingSpot = ParkingSpotTypes.Large, ParkingSpotsCount = 5 };
                 default:
                     throw new ArgumentException($"VechicleType {vechicle.VechicleType} is invalid.");
-    }
-}
+            }
+        }
     }
 }

@@ -103,8 +103,7 @@ namespace ParkingLot.BusinessLogic
 
         public bool UnParkVechicle(Vechicle vechicle)
         {
-            ParkingSpot currentSpot;
-            parkedVehicles.TryGetValue(vechicle.VehicleNumber, out currentSpot);
+            parkedVehicles.TryGetValue(vechicle.VehicleNumber, out ParkingSpot currentSpot);
             if (currentSpot == null)
                 throw new ArgumentException($"Vechicle {vechicle.VehicleNumber} is not parked");
 
@@ -115,7 +114,7 @@ namespace ParkingLot.BusinessLogic
              && spot.StartPosition + spot.SpotCount == currentSpot.StartPosition
             );
 
-            if(leftSpot != null)
+            if (leftSpot != null)
             {
                 currentSpot.StartPosition = leftSpot.StartPosition;
                 currentSpot.SpotCount = currentSpot.SpotCount + leftSpot.SpotCount;
@@ -133,5 +132,6 @@ namespace ParkingLot.BusinessLogic
             freeParkingSpots = freeParkingSpots.Add(currentSpot);
             return true;
         }
+
     }
 }

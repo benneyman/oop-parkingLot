@@ -10,6 +10,6 @@ namespace ParkingLot.Enums
     {
         Motorcycle = 0,
         Compact = 1,
-        Large  = 2
+        Large = 2
     }
 }

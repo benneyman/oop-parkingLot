@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ParkingLot.Models
 {
-    public class ParkingSpot 
+    public class ParkingSpot
     {
         public int Floor { get; set; }
         public int Row { get; set; }

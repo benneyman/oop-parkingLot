@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using ParkingLot.Models;
 using ParkingLot.Enums;
 using FluentAssertions;
+using System.Threading.Tasks;
 
 namespace ParkingLot.Tests
 {
@@ -56,6 +57,63 @@ namespace ParkingLot.Tests
             actual.Should().BeEquivalentTo(expected);
         }
         [TestMethod]
+        public void GetOptimalSpotShouldReturnFirstPositionForCar()
+        {
+            var parkingLot = new ParkingLotCore(layout, new ParkingSpaceMapper());
+            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.Car };
+            var actual = parkingLot.GetOptimalParkingSpot(vehicle);
+            var expected = new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Compact, StartPosition = 1, SpotCount = 1 };
+            actual.Should().BeEquivalentTo(expected);
+        }
+        [TestMethod]
+        public void GetOptimalSpotShouldReturnHigherFirstPositionForCar()
+        {
+            List<List<List<ParkingSpot>>> newLayout = new List<List<List<ParkingSpot>>>()
+            {
+                new List<List<ParkingSpot>> ()
+                {
+                    new List<ParkingSpot> ()
+                    {
+                        new ParkingSpot() { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 10},
+                        new ParkingSpot() { Floor = 1, Row = 2, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 10},
+                        new ParkingSpot() { Floor = 1, Row = 3, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 10}
+                    },
+                    new List<ParkingSpot> ()
+                    {
+                        new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 10},
+                        new ParkingSpot() { Floor = 2, Row = 2, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 10},
+                        new ParkingSpot() { Floor = 2, Row = 2, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 10}
+                    },
+                }
+            };
+            var parkingLot = new ParkingLotCore(newLayout, new ParkingSpaceMapper());
+            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.Car };
+            var actual = parkingLot.GetOptimalParkingSpot(vehicle);
+            var expected = new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 1 };
+            actual.Should().BeEquivalentTo(expected);
+        }
+        [TestMethod]
+        public void GetOptimalSpotShouldReturnHigherFirstPositionForMotorCycle()
+        {
+            List<List<List<ParkingSpot>>> newLayout = new List<List<List<ParkingSpot>>>()
+            {
+                new List<List<ParkingSpot>> ()
+                {
+                    new List<ParkingSpot> ()
+                    {
+                        new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 10},
+                        new ParkingSpot() { Floor = 2, Row = 2, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 10},
+                        new ParkingSpot() { Floor = 2, Row = 2, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 10}
+                    },
+                }
+            };
+            var parkingLot = new ParkingLotCore(newLayout, new ParkingSpaceMapper());
+            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.Car };
+            var actual = parkingLot.GetOptimalParkingSpot(vehicle);
+            var expected = new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 1 };
+            actual.Should().BeEquivalentTo(expected);
+        }
+        [TestMethod]
         public void GetOptimalSpotShouldReturnNull()
         {
             var mockSpaceMapper = new Mock<IParkingSpaceMapper>();
@@ -88,6 +146,15 @@ namespace ParkingLot.Tests
                 Action act = () => parkingLot.ParkVehicle(vechicle, spot);
                 act.Should().Throw<InvalidOperationException>();
             }
+        }
+        [TestMethod]
+        public async void ParkMultipleTimesShouldThrowExceptionOnce()
+        {
+            var parkingLot = new ParkingLotCore(layout, new ParkingSpaceMapper());
+            ParkingSpot spot = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 2 };
+            var vechicle = new Vechicle() { VehicleNumber = "est", VechicleType = VehicleTypes.MotorCycle };
+            Action act = async () =>  await Task.Run(() => parkingLot.ParkVehicle(vechicle, spot));
+            var result2 = await Task.Run(() => parkingLot.ParkVehicle(vechicle, spot));
         }
     }
 }
