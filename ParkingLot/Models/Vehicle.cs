@@ -7,9 +7,9 @@ using ParkingLot.Enums;
 
 namespace ParkingLot.Models
 {
-    public class Vechicle
+    public class Vehicle
     {
         public string VehicleNumber { get; set; }
-        public VehicleTypes VechicleType { get; set; }
+        public VehicleTypes vehicleType { get; set; }
     }
 }

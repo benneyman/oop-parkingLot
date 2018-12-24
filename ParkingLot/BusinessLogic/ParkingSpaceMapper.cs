@@ -11,9 +11,9 @@ namespace ParkingLot.BusinessLogic
 {
     public class ParkingSpaceMapper : IParkingSpaceMapper
     {
-        public ParkingSpaceRequirment GetSmallestParkingSpaceRequired(Vechicle vechicle)
+        public ParkingSpaceRequirment GetSmallestParkingSpaceRequired(Vehicle vehicle)
         {
-            switch (vechicle.VechicleType)
+            switch (vehicle.vehicleType)
             {
                 case VehicleTypes.MotorCycle:
                     return new ParkingSpaceRequirment() { ParkingSpot = ParkingSpotTypes.Motorcycle, ParkingSpotsCount = 1 };
@@ -22,7 +22,7 @@ namespace ParkingLot.BusinessLogic
                 case VehicleTypes.Bus:
                     return new ParkingSpaceRequirment() { ParkingSpot = ParkingSpotTypes.Large, ParkingSpotsCount = 5 };
                 default:
-                    throw new ArgumentException($"VechicleType {vechicle.VechicleType} is invalid.");
+                    throw new ArgumentException($"vehicleType {vehicle.vehicleType} is invalid.");
             }
         }
     }

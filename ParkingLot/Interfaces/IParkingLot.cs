@@ -11,9 +11,9 @@ namespace ParkingLot.Interfaces
     public interface IParkingLot
     {
         int FreeSpots { get; }
-        bool ParkVehicle(Vechicle vehicle, ParkingSpot parkingSpot);
-        bool UnParkVechicle(Vechicle vechicle);
-        ParkingSpot GetOptimalParkingSpot(Vechicle vechicle);
+        bool ParkVehicle(Vehicle vehicle, ParkingSpot parkingSpot);
+        bool UnParkvehicle(Vehicle vehicle);
+        ParkingSpot GetOptimalParkingSpot(Vehicle vehicle);
         ParkingSpotStatus GetParkingSpotStatus(ParkingSpot spot);
     }
 }

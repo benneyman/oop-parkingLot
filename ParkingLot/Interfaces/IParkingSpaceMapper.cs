@@ -9,6 +9,6 @@ namespace ParkingLot.Interfaces
 {
     public interface IParkingSpaceMapper
     {
-        ParkingSpaceRequirment GetSmallestParkingSpaceRequired(Vechicle vechicle);
+        ParkingSpaceRequirment GetSmallestParkingSpaceRequired(Vehicle vehicle);
     }
 }

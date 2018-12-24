@@ -55,9 +55,9 @@ namespace ParkingLot.BusinessLogic
             }
         }
 
-        public ParkingSpot GetOptimalParkingSpot(Vechicle vechicle)
+        public ParkingSpot GetOptimalParkingSpot(Vehicle vehicle)
         {
-            ParkingSpaceRequirment requiredSpace = parkingSpaceMapper.GetSmallestParkingSpaceRequired(vechicle);
+            ParkingSpaceRequirment requiredSpace = parkingSpaceMapper.GetSmallestParkingSpaceRequired(vehicle);
             var vacantSpot = freeParkingSpots.FirstOrDefault(m => m.ParkingSpotTypes >= requiredSpace.ParkingSpot
             && m.SpotCount >= requiredSpace.ParkingSpotsCount
             );
@@ -68,7 +68,7 @@ namespace ParkingLot.BusinessLogic
             return vacantSpot;
         }
 
-        public bool ParkVehicle(Vechicle vehicle, ParkingSpot parkingSpot)
+        public bool ParkVehicle(Vehicle vehicle, ParkingSpot parkingSpot)
         {
             if (parkedVehicles.ContainsKey(vehicle.VehicleNumber))
             {
@@ -102,11 +102,11 @@ namespace ParkingLot.BusinessLogic
             return true;
         }
 
-        public bool UnParkVechicle(Vechicle vechicle)
+        public bool UnParkvehicle(Vehicle vehicle)
         {
-            parkedVehicles.TryRemove(vechicle.VehicleNumber, out ParkingSpot currentSpot);
+            parkedVehicles.TryRemove(vehicle.VehicleNumber, out ParkingSpot currentSpot);
             if (currentSpot == null)
-                throw new ArgumentException($"Vechicle {vechicle.VehicleNumber} is not parked");
+                throw new ArgumentException($"vehicle {vehicle.VehicleNumber} is not parked");
             
             var leftSpot = freeParkingSpots.FirstOrDefault(spot => spot.Floor == currentSpot.Floor
              && spot.Row == currentSpot.Row

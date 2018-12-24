@@ -56,7 +56,7 @@
     <Compile Include="Models\ParkingLotStatus.cs" />
     <Compile Include="Models\ParkingSpaceRequirment.cs" />
     <Compile Include="Models\ParkingSpot.cs" />
-    <Compile Include="Models\Vechicle.cs" />
+    <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

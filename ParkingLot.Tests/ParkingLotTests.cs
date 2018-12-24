@@ -51,7 +51,7 @@ namespace ParkingLot.Tests
         public void GetOptimalSpotShouldReturnFirstPosition()
         {
             var parkingLot = new ParkingLotCore(layout, new ParkingSpaceMapper());
-            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.MotorCycle };
+            var vehicle = new Vehicle() { VehicleNumber = "One", vehicleType = VehicleTypes.MotorCycle };
             var actual = parkingLot.GetOptimalParkingSpot(vehicle);
             var expected = new ParkingSpot() { Floor = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, Row = 1, SpotCount = 1, StartPosition = 1 };
             actual.Should().BeEquivalentTo(expected);
@@ -60,7 +60,7 @@ namespace ParkingLot.Tests
         public void GetOptimalSpotShouldReturnFirstPositionForCar()
         {
             var parkingLot = new ParkingLotCore(layout, new ParkingSpaceMapper());
-            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.Car };
+            var vehicle = new Vehicle() { VehicleNumber = "One", vehicleType = VehicleTypes.Car };
             var actual = parkingLot.GetOptimalParkingSpot(vehicle);
             var expected = new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Compact, StartPosition = 1, SpotCount = 1 };
             actual.Should().BeEquivalentTo(expected);
@@ -87,7 +87,7 @@ namespace ParkingLot.Tests
                 }
             };
             var parkingLot = new ParkingLotCore(newLayout, new ParkingSpaceMapper());
-            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.Car };
+            var vehicle = new Vehicle() { VehicleNumber = "One", vehicleType = VehicleTypes.Car };
             var actual = parkingLot.GetOptimalParkingSpot(vehicle);
             var expected = new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 1 };
             actual.Should().BeEquivalentTo(expected);
@@ -108,7 +108,7 @@ namespace ParkingLot.Tests
                 }
             };
             var parkingLot = new ParkingLotCore(newLayout, new ParkingSpaceMapper());
-            var vehicle = new Vechicle() { VehicleNumber = "One", VechicleType = VehicleTypes.Car };
+            var vehicle = new Vehicle() { VehicleNumber = "One", vehicleType = VehicleTypes.Car };
             var actual = parkingLot.GetOptimalParkingSpot(vehicle);
             var expected = new ParkingSpot() { Floor = 2, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Large, StartPosition = 1, SpotCount = 1 };
             actual.Should().BeEquivalentTo(expected);
@@ -117,10 +117,10 @@ namespace ParkingLot.Tests
         public void GetOptimalSpotShouldReturnNull()
         {
             var mockSpaceMapper = new Mock<IParkingSpaceMapper>();
-            mockSpaceMapper.Setup(m => m.GetSmallestParkingSpaceRequired(It.IsAny<Vechicle>()))
+            mockSpaceMapper.Setup(m => m.GetSmallestParkingSpaceRequired(It.IsAny<Vehicle>()))
                 .Returns(new ParkingSpaceRequirment() { ParkingSpot = ParkingSpotTypes.Large, ParkingSpotsCount = 15 });
             var parkingLot = new ParkingLotCore(layout, mockSpaceMapper.Object);
-            var parkingSpot = parkingLot.GetOptimalParkingSpot(new Vechicle() { VehicleNumber = "1", VechicleType = VehicleTypes.Bus });
+            var parkingSpot = parkingLot.GetOptimalParkingSpot(new Vehicle() { VehicleNumber = "1", vehicleType = VehicleTypes.Bus });
             parkingSpot.Should().BeNull();
         }
         [TestMethod]
@@ -128,8 +128,8 @@ namespace ParkingLot.Tests
         {
             var parkingLot = new ParkingLotCore(layout, new ParkingSpaceMapper());
             ParkingSpot spot = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 2 };
-            var vechicle = new Vechicle() { VehicleNumber = "est", VechicleType = VehicleTypes.MotorCycle };
-            var actual = parkingLot.ParkVehicle(vechicle, spot);
+            var vehicle = new Vehicle() { VehicleNumber = "est", vehicleType = VehicleTypes.MotorCycle };
+            var actual = parkingLot.ParkVehicle(vehicle, spot);
             actual.Should().BeTrue();
         }
         [TestMethod]
@@ -139,8 +139,8 @@ namespace ParkingLot.Tests
             ParkingSpot spot = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 3, SpotCount = 2 };
             ParkingSpot newVacant = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 5, SpotCount = 6 };
             ParkingSpot newVacant2 = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 2 };
-            var vechicle = new Vechicle() { VehicleNumber = "est", VechicleType = VehicleTypes.MotorCycle };
-            parkingLot.ParkVehicle(vechicle, spot).Should().BeTrue();
+            var vehicle = new Vehicle() { VehicleNumber = "est", vehicleType = VehicleTypes.MotorCycle };
+            parkingLot.ParkVehicle(vehicle, spot).Should().BeTrue();
             parkingLot.GetParkingSpotStatus(newVacant).Should().Be(ParkingSpotStatus.Vacant);
             parkingLot.GetParkingSpotStatus(newVacant2).Should().Be(ParkingSpotStatus.Vacant);
             parkingLot.GetParkingSpotStatus(spot).Should().Be(ParkingSpotStatus.Occupied);
@@ -153,9 +153,9 @@ namespace ParkingLot.Tests
             ParkingSpot newVacant = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 5, SpotCount = 6 };
             ParkingSpot newVacant2 = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 2 };
             ParkingSpot newVacant3 = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 10 };
-            var vechicle = new Vechicle() { VehicleNumber = "est", VechicleType = VehicleTypes.MotorCycle };
-            parkingLot.ParkVehicle(vechicle, spot).Should().BeTrue();
-            parkingLot.UnParkVechicle(vechicle);
+            var vehicle = new Vehicle() { VehicleNumber = "est", vehicleType = VehicleTypes.MotorCycle };
+            parkingLot.ParkVehicle(vehicle, spot).Should().BeTrue();
+            parkingLot.UnParkvehicle(vehicle);
             parkingLot.GetParkingSpotStatus(newVacant).Should().Be(ParkingSpotStatus.Vacant);
             parkingLot.GetParkingSpotStatus(newVacant2).Should().Be(ParkingSpotStatus.Vacant);
             parkingLot.GetParkingSpotStatus(spot).Should().Be(ParkingSpotStatus.Vacant);
@@ -166,12 +166,12 @@ namespace ParkingLot.Tests
         {
             var parkingLot = new ParkingLotCore(layout, new ParkingSpaceMapper());
             ParkingSpot spot = new ParkingSpot { Floor = 1, Row = 1, ParkingSpotTypes = ParkingSpotTypes.Motorcycle, StartPosition = 1, SpotCount = 2 };
-            var vechicle = new Vechicle() { VehicleNumber = "est", VechicleType = VehicleTypes.MotorCycle };
-            var actual = parkingLot.ParkVehicle(vechicle, spot);
+            var vehicle = new Vehicle() { VehicleNumber = "est", vehicleType = VehicleTypes.MotorCycle };
+            var actual = parkingLot.ParkVehicle(vehicle, spot);
             if (actual == true)
             {
 
-                Action act = () => parkingLot.ParkVehicle(vechicle, spot);
+                Action act = () => parkingLot.ParkVehicle(vehicle, spot);
                 act.Should().Throw<InvalidOperationException>();
             }
         }
